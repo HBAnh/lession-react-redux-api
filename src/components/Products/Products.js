@@ -11,8 +11,8 @@ class Products extends Component {
             <thead>
               <tr>
                 <th>STT</th>
-                <th>Mã</th>
-                <th>Tên</th>
+                <th>Mã SP</th>
+                <th>Tên Sản Phẩm</th>
                 <th>Giá</th>
                 <th>Trạng Thái</th>
                 <th>Hành Động</th>

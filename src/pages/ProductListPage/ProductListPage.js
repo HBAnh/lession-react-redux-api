@@ -2,17 +2,34 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import Products from "../../components/Products/Products";
 import ProductItem from "../../components/ProductItem/ProductItem";
+import callApi from '../../utils/ApiCaller';
+import { Link } from "react-router-dom";
 
 class ProductListPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      products: [],
+    }
+  }
+  // lifecyrcle hook
+  componentDidMount(){
+      callApi('products', 'GET', null).then(res => {
+        this.setState({
+            products: res.data
+        })
+      })
+  }
+
   render() {
-    const {products} = this.props;
+    const {products} = this.state;
 
     return (
       <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         {/* nút thêm sản phẩm */}
-        <button type="button" className="btn btn-primary mb-10">
-          Thêm Sản Phẩm
-        </button>
+        <Link to="/products/add" className="btn btn-primary mb-10">
+            Thêm Sản Phẩm
+        </Link>
         {/* Danh sách sản phẩm */}
         <Products>{this.showProductItem(products)}</Products>
       </div>
