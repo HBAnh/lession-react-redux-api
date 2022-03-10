@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 class ProductItem extends Component {
   render() {
     const { product, index } = this.props;
@@ -15,6 +16,7 @@ class ProductItem extends Component {
         <td>
           <span
             className={`label label-${ product.status ? "success" : "warning" } pd-5 `} // chuyển màu của trạng thái
+            onClick={()=> this.onHandleStatus(product.id)}
           > 
           {/* hiển thị status */}
              {product.status ? "Còn hàng" : "Hết hàng"} 
@@ -22,16 +24,38 @@ class ProductItem extends Component {
         </td>
         <td>
           {/* nút sửa */}
-          <button type="button" className="btn btn-warning mr-10">
+          <Link 
+            to={`/products/${product.id}/edit`} 
+            className="btn btn-warning mr-10"
+            
+          >
             Sửa
-          </button>
+          </Link>
           {/* nút xoá */}
-          <button type="button" className="btn btn-danger">
+          <button 
+            type="button" 
+            className="btn btn-danger"
+            onClick={() => this.onDelete(product.id)}
+          >
             Xoá
           </button>
         </td>
       </tr>
     );
+  }
+  // Hàm xoá
+  onDelete = (id) => {
+      // eslint-disable-next-line no-restricted-globals
+      if(confirm('Bạn chắc muốn xoá?')){
+        this.props.onDelete(id);
+    }
+
+  }
+  // Hàm update Status
+  onHandleStatus = (id) => {
+    if(id){
+      this.props.onUpdateStatus(id);
+    }
   }
 }
 
