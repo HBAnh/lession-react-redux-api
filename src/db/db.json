@@ -13,10 +13,22 @@
       "status": true
     },
     {
+      "id": 3,
       "name": "Iphone 7s",
-      "price": 1000,
-      "status": false,
-      "id": 3
+      "price": "500",
+      "status": ""
+    },
+    {
+      "id": 4,
+      "name": "Noki 1080",
+      "price": "100",
+      "status": ""
+    },
+    {
+      "id": 5,
+      "name": "Oppo F1s",
+      "price": "500",
+      "status": true
     }
   ]
 }

@@ -8,32 +8,32 @@ class ProductItem extends Component {
         {/* số thứ tự */}
         <td>{index + 1}</td>
         {/* id sản phẩm*/}
-        <td>{product.id}</td> 
+        <td>{product.id}</td>
         {/* tên sản phẩm */}
         <td>{product.name}</td>
         {/* giá sản phẩm */}
         <td>{product.price}</td>
         <td>
           <span
-            className={`label label-${ product.status ? "success" : "warning" } pd-5 `} // chuyển màu của trạng thái
-            onClick={()=> this.onHandleStatus(product.id)}
-          > 
-          {/* hiển thị status */}
-             {product.status ? "Còn hàng" : "Hết hàng"} 
+            className={`label label-${
+              product.status ? "success" : "warning"
+            } pd-5 `} // chuyển màu của trạng thái
+          >
+            {/* hiển thị status */}
+            {product.status ? "Còn hàng" : "Hết hàng"}
           </span>
         </td>
         <td>
           {/* nút sửa */}
-          <Link 
-            to={`/products/${product.id}/edit`} 
+          <Link
+            to={`/products/${product.id}/edit`}
             className="btn btn-warning mr-10"
-            
           >
             Sửa
           </Link>
           {/* nút xoá */}
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="btn btn-danger"
             onClick={() => this.onDelete(product.id)}
           >
@@ -45,18 +45,11 @@ class ProductItem extends Component {
   }
   // Hàm xoá
   onDelete = (id) => {
-      // eslint-disable-next-line no-restricted-globals
-      if(confirm('Bạn chắc muốn xoá?')){
-        this.props.onDelete(id);
+    // eslint-disable-next-line no-restricted-globals
+    if (confirm("Bạn chắc muốn xoá?")) {
+      this.props.onDelete(id);
     }
-
-  }
-  // Hàm update Status
-  onHandleStatus = (id) => {
-    if(id){
-      this.props.onUpdateStatus(id);
-    }
-  }
+  };
 }
 
 export default ProductItem;

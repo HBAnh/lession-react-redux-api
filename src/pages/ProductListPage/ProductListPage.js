@@ -2,28 +2,20 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import Products from "../../components/Products/Products";
 import ProductItem from "../../components/ProductItem/ProductItem";
-import callApi from "../../utils/ApiCaller";
 import { Link } from "react-router-dom";
+import {
+  actDeleteProductRequest,
+  actFetchProductsRequest,
+} from "../../actions/index";
 
 class ProductListPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      products: [],
-    };
-  }
-
   // lifecyrcle hook
   componentDidMount() {
-    callApi("products", "GET", null).then((res) => {
-      this.setState({
-        products: res.data,
-      });
-    });
+    this.props.fetchAllProducts();
   }
 
   render() {
-    const { products } = this.state;
+    const { products } = this.props;
 
     return (
       <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -47,7 +39,6 @@ class ProductListPage extends Component {
             product={p}
             index={index}
             onDelete={this.onDelete}
-            onUpdateStatus={this.onUpdateStatus}
           />
         );
       });
@@ -55,41 +46,10 @@ class ProductListPage extends Component {
     return result;
   };
 
-  // Hàm find index
-  findIndex = (products, id) => {
-    let result = -1;
-    products.forEach((p, index) => {
-      if (p.id === id) {
-        result = index;
-      }
-    });
-    return result;
-  };
-
   // hàm xoá sản phẩm theo id
   onDelete = (id) => {
-    const { products } = this.state;
-    callApi(`products/${id}`, "DELETE", null) // endpoint = product/id thì mới dùng đc method DELETE
-      .then((res) => {
-        if (res.status === 200) {
-          // đã thực thi thành công trên server
-          let index = this.findIndex(products, id);
-          if (index !== -1) {
-            console.log(index);
-            products.splice(index, 1);
-            this.setState({
-              products: products,
-            });
-          }
-        }
-      });
+    this.props.onDeleteProduct(id);
   };
-  //Ham update status
-  onUpdateStatus = (id) => {
-    const {products} = this.state;
-    console.log(products);
-    // callApi(`products/${id}`, 'PUT', { status: }).then(res = > {})
-  }
 } // out class
 // chuyển state thành props
 const mapStateToProps = (state) => {
@@ -97,5 +57,14 @@ const mapStateToProps = (state) => {
     products: state.products,
   };
 };
-
-export default connect(mapStateToProps, null)(ProductListPage);
+const mapDispatchToProps = (dispatch, props) => {
+  return {
+    fetchAllProducts: () => {
+      dispatch(actFetchProductsRequest());
+    },
+    onDeleteProduct: (id) => {
+      dispatch(actDeleteProductRequest(id));
+    },
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(ProductListPage);

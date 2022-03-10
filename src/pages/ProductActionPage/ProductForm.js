@@ -1,6 +1,8 @@
 import React, { Component } from "react";
-import callApi from "../../utils/ApiCaller";
 import {Link} from 'react-router-dom'
+import {actAddroductRequest, actGetProductByIdRequest, actUpdateProductRequest} from '../../actions/index';
+import { connect } from "react-redux";
+
 class ProductForm extends Component {
   constructor(props) {
     super(props);
@@ -73,18 +75,21 @@ class ProductForm extends Component {
   componentDidMount(){
     const id = this.props.productId;
     if(id){
-      callApi(`products/${id}`, 'GET', null).then(res => {
-        const data = res.data;
-        this.setState({
-          id: data.id,
-          txtName: data.name,
-          txtPrice: data.price,
-          chkbStatus: data.status
-        })
+     this.props.onGetProductByID(id);
+    }
+  }
+  
+  componentWillReceiveProps(nextProps) {
+    if(nextProps && nextProps.productEdit){
+      let {productEdit} = nextProps;
+      this.setState({
+        id: productEdit.id,
+        txtName: productEdit.name,
+        txtPrice: productEdit.price,
+        chkbStatus: productEdit.status,
       })
     }
   }
-
   // ham onChange muti Input
   onChange = (e) => {
     let target = e.target;
@@ -99,25 +104,41 @@ class ProductForm extends Component {
     e.preventDefault();
     let { id,txtName, txtPrice, chkbStatus }= this.state;
     const navigate = this.props.navigation;
-    if(id){ // edit san pham
-        callApi(`products/${id}`, 'PUT', {
-            name: txtName,
-            price: txtPrice,
-            status: chkbStatus
-        }).then(res => {
-            navigate('/products')
-        })
-    } else { // add san pham
-      callApi('products','POST',{
-        name: txtName,
-        price: txtPrice,
-        status: chkbStatus
-    }).then(res => {
-        navigate('/products');
-    })
+
+    let product = {
+      id: id,
+      name: txtName,
+      price: txtPrice,
+      status: chkbStatus
     }
+    if(id){ // edit san pham
+        this.props.onUpdateProduct(product);
+    } else { // add san pham
+        this.props.onAddproduct(product);
+    }
+    navigate('/products');
   }
 
 }
 
-export default ProductForm;
+const mapStateToProps = (state) => {
+  return {
+    productEdit : state.productEditing
+  }
+}
+
+const mapDispatchToProps = (dispatch, props) => {
+  return {
+    onAddproduct: (product) => {
+      dispatch(actAddroductRequest(product));
+    },
+    onGetProductByID: (id) => {
+      dispatch(actGetProductByIdRequest(id));
+    },
+    onUpdateProduct: (product) => {
+      dispatch(actUpdateProductRequest(product));
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductForm);
